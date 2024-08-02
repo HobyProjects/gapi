@@ -1,0 +1,5 @@
+C:/Users/Isuru Senanayaka/Documents/GitHub/gapi/build/CMakeFiles/gapi.dir
+C:/Users/Isuru Senanayaka/Documents/GitHub/gapi/build/CMakeFiles/ALL_BUILD.dir
+C:/Users/Isuru Senanayaka/Documents/GitHub/gapi/build/CMakeFiles/ZERO_CHECK.dir
+C:/Users/Isuru Senanayaka/Documents/GitHub/gapi/build/vendors/glm/CMakeFiles/ALL_BUILD.dir
+C:/Users/Isuru Senanayaka/Documents/GitHub/gapi/build/vendors/glm/glm/CMakeFiles/glm.dir

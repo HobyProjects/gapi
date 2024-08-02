@@ -1,0 +1,608 @@
+{
+	"configurations" : 
+	[
+		{
+			"directories" : 
+			[
+				{
+					"build" : ".",
+					"childIndexes" : 
+					[
+						1
+					],
+					"jsonFile" : "directory-.-Debug-d0094a50bb2071803777.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.20"
+					},
+					"projectIndex" : 0,
+					"source" : ".",
+					"targetIndexes" : 
+					[
+						0,
+						2,
+						3
+					]
+				},
+				{
+					"build" : "vendors",
+					"childIndexes" : 
+					[
+						2
+					],
+					"jsonFile" : "directory-vendors-Debug-c08a511bd90f804bbc41.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.20"
+					},
+					"parentIndex" : 0,
+					"projectIndex" : 0,
+					"source" : "vendors"
+				},
+				{
+					"build" : "vendors/glm",
+					"childIndexes" : 
+					[
+						3
+					],
+					"jsonFile" : "directory-vendors.glm-Debug-94d62a411458acb02496.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.6"
+					},
+					"parentIndex" : 1,
+					"projectIndex" : 1,
+					"source" : "vendors/glm",
+					"targetIndexes" : 
+					[
+						1
+					]
+				},
+				{
+					"build" : "vendors/glm/glm",
+					"jsonFile" : "directory-vendors.glm.glm-Debug-339085410c21446a60a3.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.6"
+					},
+					"parentIndex" : 2,
+					"projectIndex" : 1,
+					"source" : "vendors/glm/glm",
+					"targetIndexes" : 
+					[
+						4
+					]
+				}
+			],
+			"name" : "Debug",
+			"projects" : 
+			[
+				{
+					"childIndexes" : 
+					[
+						1
+					],
+					"directoryIndexes" : 
+					[
+						0,
+						1
+					],
+					"name" : "gapi",
+					"targetIndexes" : 
+					[
+						0,
+						2,
+						3
+					]
+				},
+				{
+					"directoryIndexes" : 
+					[
+						2,
+						3
+					],
+					"name" : "glm",
+					"parentIndex" : 0,
+					"targetIndexes" : 
+					[
+						1,
+						4
+					]
+				}
+			],
+			"targets" : 
+			[
+				{
+					"directoryIndex" : 0,
+					"id" : "ALL_BUILD::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-ALL_BUILD-Debug-e6a4c713df07b0c022ab.json",
+					"name" : "ALL_BUILD",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 2,
+					"id" : "ALL_BUILD::@48e0665df6e9ebc006ec",
+					"jsonFile" : "target-ALL_BUILD-Debug-92c081b4e5dbd63494ae.json",
+					"name" : "ALL_BUILD",
+					"projectIndex" : 1
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "ZERO_CHECK::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-ZERO_CHECK-Debug-493f17bc04ac0dc4d0f3.json",
+					"name" : "ZERO_CHECK",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "gapi::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-gapi-Debug-2de958e945bfaf2458f9.json",
+					"name" : "gapi",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 3,
+					"id" : "glm::@bfb4dcedd511f1f52cac",
+					"jsonFile" : "target-glm-Debug-37923dacf70ad9ff820c.json",
+					"name" : "glm",
+					"projectIndex" : 1
+				}
+			]
+		},
+		{
+			"directories" : 
+			[
+				{
+					"build" : ".",
+					"childIndexes" : 
+					[
+						1
+					],
+					"jsonFile" : "directory-.-Release-d0094a50bb2071803777.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.20"
+					},
+					"projectIndex" : 0,
+					"source" : ".",
+					"targetIndexes" : 
+					[
+						0,
+						2,
+						3
+					]
+				},
+				{
+					"build" : "vendors",
+					"childIndexes" : 
+					[
+						2
+					],
+					"jsonFile" : "directory-vendors-Release-c08a511bd90f804bbc41.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.20"
+					},
+					"parentIndex" : 0,
+					"projectIndex" : 0,
+					"source" : "vendors"
+				},
+				{
+					"build" : "vendors/glm",
+					"childIndexes" : 
+					[
+						3
+					],
+					"jsonFile" : "directory-vendors.glm-Release-94d62a411458acb02496.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.6"
+					},
+					"parentIndex" : 1,
+					"projectIndex" : 1,
+					"source" : "vendors/glm",
+					"targetIndexes" : 
+					[
+						1
+					]
+				},
+				{
+					"build" : "vendors/glm/glm",
+					"jsonFile" : "directory-vendors.glm.glm-Release-339085410c21446a60a3.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.6"
+					},
+					"parentIndex" : 2,
+					"projectIndex" : 1,
+					"source" : "vendors/glm/glm",
+					"targetIndexes" : 
+					[
+						4
+					]
+				}
+			],
+			"name" : "Release",
+			"projects" : 
+			[
+				{
+					"childIndexes" : 
+					[
+						1
+					],
+					"directoryIndexes" : 
+					[
+						0,
+						1
+					],
+					"name" : "gapi",
+					"targetIndexes" : 
+					[
+						0,
+						2,
+						3
+					]
+				},
+				{
+					"directoryIndexes" : 
+					[
+						2,
+						3
+					],
+					"name" : "glm",
+					"parentIndex" : 0,
+					"targetIndexes" : 
+					[
+						1,
+						4
+					]
+				}
+			],
+			"targets" : 
+			[
+				{
+					"directoryIndex" : 0,
+					"id" : "ALL_BUILD::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-ALL_BUILD-Release-e6a4c713df07b0c022ab.json",
+					"name" : "ALL_BUILD",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 2,
+					"id" : "ALL_BUILD::@48e0665df6e9ebc006ec",
+					"jsonFile" : "target-ALL_BUILD-Release-92c081b4e5dbd63494ae.json",
+					"name" : "ALL_BUILD",
+					"projectIndex" : 1
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "ZERO_CHECK::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-ZERO_CHECK-Release-493f17bc04ac0dc4d0f3.json",
+					"name" : "ZERO_CHECK",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "gapi::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-gapi-Release-790f0a51193608e860ee.json",
+					"name" : "gapi",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 3,
+					"id" : "glm::@bfb4dcedd511f1f52cac",
+					"jsonFile" : "target-glm-Release-c1c385ecc226d1fdfbe8.json",
+					"name" : "glm",
+					"projectIndex" : 1
+				}
+			]
+		},
+		{
+			"directories" : 
+			[
+				{
+					"build" : ".",
+					"childIndexes" : 
+					[
+						1
+					],
+					"jsonFile" : "directory-.-MinSizeRel-d0094a50bb2071803777.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.20"
+					},
+					"projectIndex" : 0,
+					"source" : ".",
+					"targetIndexes" : 
+					[
+						0,
+						2,
+						3
+					]
+				},
+				{
+					"build" : "vendors",
+					"childIndexes" : 
+					[
+						2
+					],
+					"jsonFile" : "directory-vendors-MinSizeRel-c08a511bd90f804bbc41.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.20"
+					},
+					"parentIndex" : 0,
+					"projectIndex" : 0,
+					"source" : "vendors"
+				},
+				{
+					"build" : "vendors/glm",
+					"childIndexes" : 
+					[
+						3
+					],
+					"jsonFile" : "directory-vendors.glm-MinSizeRel-94d62a411458acb02496.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.6"
+					},
+					"parentIndex" : 1,
+					"projectIndex" : 1,
+					"source" : "vendors/glm",
+					"targetIndexes" : 
+					[
+						1
+					]
+				},
+				{
+					"build" : "vendors/glm/glm",
+					"jsonFile" : "directory-vendors.glm.glm-MinSizeRel-339085410c21446a60a3.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.6"
+					},
+					"parentIndex" : 2,
+					"projectIndex" : 1,
+					"source" : "vendors/glm/glm",
+					"targetIndexes" : 
+					[
+						4
+					]
+				}
+			],
+			"name" : "MinSizeRel",
+			"projects" : 
+			[
+				{
+					"childIndexes" : 
+					[
+						1
+					],
+					"directoryIndexes" : 
+					[
+						0,
+						1
+					],
+					"name" : "gapi",
+					"targetIndexes" : 
+					[
+						0,
+						2,
+						3
+					]
+				},
+				{
+					"directoryIndexes" : 
+					[
+						2,
+						3
+					],
+					"name" : "glm",
+					"parentIndex" : 0,
+					"targetIndexes" : 
+					[
+						1,
+						4
+					]
+				}
+			],
+			"targets" : 
+			[
+				{
+					"directoryIndex" : 0,
+					"id" : "ALL_BUILD::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-ALL_BUILD-MinSizeRel-e6a4c713df07b0c022ab.json",
+					"name" : "ALL_BUILD",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 2,
+					"id" : "ALL_BUILD::@48e0665df6e9ebc006ec",
+					"jsonFile" : "target-ALL_BUILD-MinSizeRel-92c081b4e5dbd63494ae.json",
+					"name" : "ALL_BUILD",
+					"projectIndex" : 1
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "ZERO_CHECK::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-ZERO_CHECK-MinSizeRel-493f17bc04ac0dc4d0f3.json",
+					"name" : "ZERO_CHECK",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "gapi::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-gapi-MinSizeRel-8e6d61505791ab8897cc.json",
+					"name" : "gapi",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 3,
+					"id" : "glm::@bfb4dcedd511f1f52cac",
+					"jsonFile" : "target-glm-MinSizeRel-f53e0c7f5574018fd368.json",
+					"name" : "glm",
+					"projectIndex" : 1
+				}
+			]
+		},
+		{
+			"directories" : 
+			[
+				{
+					"build" : ".",
+					"childIndexes" : 
+					[
+						1
+					],
+					"jsonFile" : "directory-.-RelWithDebInfo-d0094a50bb2071803777.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.20"
+					},
+					"projectIndex" : 0,
+					"source" : ".",
+					"targetIndexes" : 
+					[
+						0,
+						2,
+						3
+					]
+				},
+				{
+					"build" : "vendors",
+					"childIndexes" : 
+					[
+						2
+					],
+					"jsonFile" : "directory-vendors-RelWithDebInfo-c08a511bd90f804bbc41.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.20"
+					},
+					"parentIndex" : 0,
+					"projectIndex" : 0,
+					"source" : "vendors"
+				},
+				{
+					"build" : "vendors/glm",
+					"childIndexes" : 
+					[
+						3
+					],
+					"jsonFile" : "directory-vendors.glm-RelWithDebInfo-94d62a411458acb02496.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.6"
+					},
+					"parentIndex" : 1,
+					"projectIndex" : 1,
+					"source" : "vendors/glm",
+					"targetIndexes" : 
+					[
+						1
+					]
+				},
+				{
+					"build" : "vendors/glm/glm",
+					"jsonFile" : "directory-vendors.glm.glm-RelWithDebInfo-339085410c21446a60a3.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.6"
+					},
+					"parentIndex" : 2,
+					"projectIndex" : 1,
+					"source" : "vendors/glm/glm",
+					"targetIndexes" : 
+					[
+						4
+					]
+				}
+			],
+			"name" : "RelWithDebInfo",
+			"projects" : 
+			[
+				{
+					"childIndexes" : 
+					[
+						1
+					],
+					"directoryIndexes" : 
+					[
+						0,
+						1
+					],
+					"name" : "gapi",
+					"targetIndexes" : 
+					[
+						0,
+						2,
+						3
+					]
+				},
+				{
+					"directoryIndexes" : 
+					[
+						2,
+						3
+					],
+					"name" : "glm",
+					"parentIndex" : 0,
+					"targetIndexes" : 
+					[
+						1,
+						4
+					]
+				}
+			],
+			"targets" : 
+			[
+				{
+					"directoryIndex" : 0,
+					"id" : "ALL_BUILD::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-ALL_BUILD-RelWithDebInfo-e6a4c713df07b0c022ab.json",
+					"name" : "ALL_BUILD",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 2,
+					"id" : "ALL_BUILD::@48e0665df6e9ebc006ec",
+					"jsonFile" : "target-ALL_BUILD-RelWithDebInfo-92c081b4e5dbd63494ae.json",
+					"name" : "ALL_BUILD",
+					"projectIndex" : 1
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "ZERO_CHECK::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-ZERO_CHECK-RelWithDebInfo-493f17bc04ac0dc4d0f3.json",
+					"name" : "ZERO_CHECK",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "gapi::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-gapi-RelWithDebInfo-4ff3c28648ff68d67047.json",
+					"name" : "gapi",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 3,
+					"id" : "glm::@bfb4dcedd511f1f52cac",
+					"jsonFile" : "target-glm-RelWithDebInfo-64d092544ca316a8278c.json",
+					"name" : "glm",
+					"projectIndex" : 1
+				}
+			]
+		}
+	],
+	"kind" : "codemodel",
+	"paths" : 
+	{
+		"build" : "C:/Users/Isuru Senanayaka/Documents/GitHub/gapi/build",
+		"source" : "C:/Users/Isuru Senanayaka/Documents/GitHub/gapi"
+	},
+	"version" : 
+	{
+		"major" : 2,
+		"minor" : 5
+	}
+}
