@@ -78,12 +78,8 @@ inline bool gl_check_errors(const char* file, int line){
 }
 
 #define gl(gl_func) gl_func; if(gl_check_errors(__FILE__, __LINE__)) { gapi_debugbreak(); }
-
-
 #else
-
 #define gl(gl_func) gl_func
-
 #endif
 
 namespace gapi{
