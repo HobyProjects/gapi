@@ -277,4 +277,16 @@ namespace gapi{
             virtual void channels() const noexcept = 0;
             virtual texture_type type() const noexcept = 0;
     };
+
+    template<typename Ty>
+    requires std::is_base_of<texture, Ty>::value
+    [[nodiscard]] GAPI std::shared_ptr<Ty> make_texture() noexcept{
+        return std::make_shared<Ty>();
+    }
+
+    template<typename Ty, typename... TArgs>
+    requires std::is_base_of<texture, Ty>::value
+    [[nodiscard]] GAPI std::shared_ptr<Ty> make_texture(TArgs... args) noexcept{
+        return std::make_shared<Ty>(std::forward<TArgs>(args)...);
+    }
 }

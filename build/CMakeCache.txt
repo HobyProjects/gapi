@@ -14,6 +14,9 @@
 # EXTERNAL cache entries
 ########################
 
+//Build shared libraries
+BUILD_SHARED_LIBS:BOOL=OFF
+
 //Path to a program.
 CMAKE_AR:FILEPATH=C:/Program Files/Microsoft Visual Studio/2022/Community/VC/Tools/MSVC/14.40.33807/bin/Hostx64/x86/lib.exe
 
@@ -254,6 +257,43 @@ CMAKE_STATIC_LINKER_FLAGS_RELWITHDEBINFO:STRING=
 // Studio IDE projects all commands are done without /nologo.
 CMAKE_VERBOSE_MAKEFILE:BOOL=FALSE
 
+//Doxygen documentation generation tool (https://www.doxygen.nl)
+DOXYGEN_EXECUTABLE:FILEPATH=C:/mingw64/bin/doxygen.exe
+
+//Off-screen Mesa mode
+GLEW_OSMESA:BOOL=OFF
+
+//Value Computed by CMake
+GLFW_BINARY_DIR:STATIC=C:/Users/Isuru Senanayaka/Documents/GitHub/gapi/build/vendors/glfw
+
+//Build the GLFW documentation
+GLFW_BUILD_DOCS:BOOL=ON
+
+//Build the GLFW example programs
+GLFW_BUILD_EXAMPLES:BOOL=OFF
+
+//Build the GLFW test programs
+GLFW_BUILD_TESTS:BOOL=OFF
+
+//Build support for Win32
+GLFW_BUILD_WIN32:BOOL=ON
+
+//Generate installation target
+GLFW_INSTALL:BOOL=ON
+
+//Value Computed by CMake
+GLFW_IS_TOP_LEVEL:STATIC=OFF
+
+//Library type override for GLFW (SHARED, STATIC, OBJECT, or empty
+// to follow BUILD_SHARED_LIBS)
+GLFW_LIBRARY_TYPE:STRING=
+
+//Value Computed by CMake
+GLFW_SOURCE_DIR:STATIC=C:/Users/Isuru Senanayaka/Documents/GitHub/gapi/vendors/glfw
+
+//Force use of high-performance GPU on hybrid systems
+GLFW_USE_HYBRID_HPG:BOOL=OFF
+
 //Generate the install target
 GLM_BUILD_INSTALL:BOOL=OFF
 
@@ -314,6 +354,24 @@ GLM_FORCE_PURE:BOOL=OFF
 //Enable ARM NEON optimizations
 GLM_TEST_ENABLE_SIMD_NEON:BOOL=OFF
 
+//Do not build executables
+ONLY_LIBS:BOOL=OFF
+
+//OpenGL library for win32
+OPENGL_gl_LIBRARY:STRING=opengl32
+
+//GLU library for win32
+OPENGL_glu_LIBRARY:STRING=glu32
+
+//Generate pc file for specified target as glew. libglew_static|libglew_shared
+PKG_CONFIG_REPRESENTATIVE_TARGET:BOOL=OFF
+
+//Use GLU
+USE_GLU:BOOL=OFF
+
+//Use MSVC runtime library DLL
+USE_MSVC_RUNTIME_LIBRARY_DLL:BOOL=ON
+
 //Value Computed by CMake
 gapi_BINARY_DIR:STATIC=C:/Users/Isuru Senanayaka/Documents/GitHub/gapi/build
 
@@ -322,6 +380,21 @@ gapi_IS_TOP_LEVEL:STATIC=ON
 
 //Value Computed by CMake
 gapi_SOURCE_DIR:STATIC=C:/Users/Isuru Senanayaka/Documents/GitHub/gapi
+
+//Build the shared glew library
+glew-cmake_BUILD_SHARED:BOOL=ON
+
+//Build the static glew library
+glew-cmake_BUILD_STATIC:BOOL=ON
+
+//Value Computed by CMake
+glew_BINARY_DIR:STATIC=C:/Users/Isuru Senanayaka/Documents/GitHub/gapi/build/vendors/glew-cmake
+
+//Value Computed by CMake
+glew_IS_TOP_LEVEL:STATIC=OFF
+
+//Value Computed by CMake
+glew_SOURCE_DIR:STATIC=C:/Users/Isuru Senanayaka/Documents/GitHub/gapi/vendors/glew-cmake
 
 //Value Computed by CMake
 glm_BINARY_DIR:STATIC=C:/Users/Isuru Senanayaka/Documents/GitHub/gapi/build/vendors/glm
@@ -399,6 +472,12 @@ CMAKE_GENERATOR_INSTANCE:INTERNAL=C:/Program Files/Microsoft Visual Studio/2022/
 CMAKE_GENERATOR_PLATFORM:INTERNAL=win32
 //Name of generator toolset.
 CMAKE_GENERATOR_TOOLSET:INTERNAL=host=x64
+//Test CMAKE_HAVE_LIBC_PTHREAD
+CMAKE_HAVE_LIBC_PTHREAD:INTERNAL=
+//Have library pthreads
+CMAKE_HAVE_PTHREADS_CREATE:INTERNAL=
+//Have library pthread
+CMAKE_HAVE_PTHREAD_CREATE:INTERNAL=
 //Source directory with the top level CMakeLists.txt file for this
 // project
 CMAKE_HOME_DIRECTORY:INTERNAL=C:/Users/Isuru Senanayaka/Documents/GitHub/gapi
@@ -449,7 +528,7 @@ CMAKE_MODULE_LINKER_FLAGS_RELWITHDEBINFO-ADVANCED:INTERNAL=1
 //ADVANCED property for variable: CMAKE_MT
 CMAKE_MT-ADVANCED:INTERNAL=1
 //number of local generators
-CMAKE_NUMBER_OF_MAKEFILES:INTERNAL=4
+CMAKE_NUMBER_OF_MAKEFILES:INTERNAL=8
 //Platform information initialized
 CMAKE_PLATFORM_INFO_INITIALIZED:INTERNAL=1
 //noop for ranlib
@@ -495,6 +574,22 @@ CMAKE_STATIC_LINKER_FLAGS_RELEASE-ADVANCED:INTERNAL=1
 CMAKE_STATIC_LINKER_FLAGS_RELWITHDEBINFO-ADVANCED:INTERNAL=1
 //ADVANCED property for variable: CMAKE_VERBOSE_MAKEFILE
 CMAKE_VERBOSE_MAKEFILE-ADVANCED:INTERNAL=1
+//ADVANCED property for variable: DOXYGEN_EXECUTABLE
+DOXYGEN_EXECUTABLE-ADVANCED:INTERNAL=1
+//Details about finding Doxygen
+FIND_PACKAGE_MESSAGE_DETAILS_Doxygen:INTERNAL=[C:/mingw64/bin/doxygen.exe][cfound components: doxygen ][v1.9.8()]
+//Details about finding OpenGL
+FIND_PACKAGE_MESSAGE_DETAILS_OpenGL:INTERNAL=[opengl32][c ][v()]
+//Details about finding Threads
+FIND_PACKAGE_MESSAGE_DETAILS_Threads:INTERNAL=[TRUE][v()]
+//GLFW pkg-config Libs.private
+GLFW_PKG_CONFIG_LIBS_PRIVATE:INTERNAL= -lgdi32
+//GLFW pkg-config Requires.private
+GLFW_PKG_CONFIG_REQUIRES_PRIVATE:INTERNAL=
+//ADVANCED property for variable: OPENGL_gl_LIBRARY
+OPENGL_gl_LIBRARY-ADVANCED:INTERNAL=1
+//ADVANCED property for variable: OPENGL_glu_LIBRARY
+OPENGL_glu_LIBRARY-ADVANCED:INTERNAL=1
 //CMAKE_INSTALL_PREFIX during last run
 _GNUInstallDirs_LAST_CMAKE_INSTALL_PREFIX:INTERNAL=C:/Program Files (x86)/gapi
 
