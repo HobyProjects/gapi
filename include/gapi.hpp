@@ -277,11 +277,9 @@ namespace gapi{
 
             virtual void bind(uint32_t slot = 0) const noexcept = 0;
 
-            [[maybe_unused]] 
-            virtual void unbind() const noexcept = 0;
+            [[maybe_unused]] virtual void unbind() const noexcept = 0;
 
-            [[maybe_unused]] 
-            virtual void* data() const noexcept = 0;
+            [[maybe_unused]] virtual void* data() const noexcept = 0;
             virtual void slot() const noexcept = 0;
             virtual void width() const noexcept = 0;
             virtual void height() const noexcept = 0;
