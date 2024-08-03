@@ -52,20 +52,35 @@ __attribute__((visibility("default")))
 #ifdef _DEBUG
 #if defined(GAPI_PLATFORM_WINDOWS)
 #define gapi_debugbreak() __debugbreak()
+#define gapi_debug_msg(cap, msg) std::cerr << cap << msg << "\n"
 #elif defined(GAPI_PLATFORM_LINUX)
 #include <signal.h>
 #define gapi_debugbreak() raise(SIGTRAP)
 #else
 #error "Platform doesn't support debugbreak yet!"
 #endif
-#define gapi_assert(exp, msg) cassert(exp, msg)
+#define gapi_assert(exp, msg) assert(exp && msg)
 #else
 #define gapi_asserts(exp, msg)
+#define gapi_debug_msg(cap, msg)
 #endif
 
 namespace gapi{
 
+    class GAPI api_info {
+
+        public:
+            api_info() = default;
+            virtual ~api_info() = default;
+
+            virtual const std::string& vendor() const noexcept = 0;
+            virtual const std::string& renderer() const noexcept = 0;
+            virtual const std::string& version() const noexcept = 0;
+            virtual const std::string& language() const noexcept = 0;
+    };
+
     class GAPI context{
+
         public:
             context() = default;
             context(const context&) = delete;
@@ -74,9 +89,9 @@ namespace gapi{
             context& operator=(context&&) = delete;
             virtual ~context() = default;
 
-            virtual bool init() const noexcept = 0;
-            virtual void swap() const noexcept = 0;
-            virtual void interval(uint32_t interval) const noexcept = 0;
+            virtual bool init() noexcept = 0;
+            virtual void swap() noexcept = 0;
+            virtual void interval(uint32_t interval) noexcept = 0;
     };
 
     template<typename Ty>
@@ -85,18 +100,18 @@ namespace gapi{
         return std::make_shared<Ty>();
     }
 
-    enum class draw : size_t{
+    enum draw : size_t{
         static_draw     = 0, 
         dynamic_draw    = 1, 
     };
 
-    enum class component : size_t{
+    enum component : int32_t{
         xyz     = 3,    xyzw    = 4,
         rgb     = 3,    rgba    = 4,
         xy      = 2,    uv      = 2,    none    = 0,
     };
 
-    enum class data_types : size_t{
+    enum data_types : size_t{
         null    = 0,    f1      = 4,    f2      = 8,    f3      = 12,  
         f4      = 16,   i1      = 4,    i2      = 8,    i3      = 12,
         i4      = 16,   ui1     = 4,    ui2     = 8,    ui3     = 12, 
@@ -105,13 +120,12 @@ namespace gapi{
 
     struct GAPI buffer_elements{
         buffer_elements() {}
-        buffer_elements(const std::string& name, component comp, data_types type, size_t size, bool normalized = false) noexcept
-            : name(name), component(comp), type(type), size(size), normalized(normalized) {}
+        buffer_elements(const std::string& name, component comp, size_t size, bool normalized = false) noexcept
+            : name(name), component(comp), size(size), normalized(normalized) {}
         ~buffer_elements() = default;
 
         std::string name{};
         component component{component::none};
-        data_types type{data_types::null};
         size_t size{0};
         size_t offset{0}; 
         bool normalized{false};
@@ -155,7 +169,7 @@ namespace gapi{
             virtual ~vertex_buffer() = default;
 
             virtual void bind() const noexcept = 0;
-            virtual void unbind() const noexcept = 0;
+            [[maybe_unused]] virtual void unbind() const noexcept = 0;
             virtual void configure_layout(const buffer_layout& layout) const noexcept = 0;
             virtual const buffer_layout& layout() const noexcept = 0;
     };
@@ -166,11 +180,8 @@ namespace gapi{
             virtual ~index_buffer() = default;
 
             virtual void bind() const noexcept = 0;
-            virtual void unbind() const noexcept = 0;
+            [[maybe_unused]] virtual void unbind() const noexcept = 0;
             virtual size_t count() const noexcept = 0;
-
-        protected:
-            size_t m_count{0};
     };
 
     template<typename Ty>
@@ -198,19 +209,16 @@ namespace gapi{
     }
 
     class GAPI vertex_array{
+
         public:
             vertex_array() = default;
             virtual ~vertex_array() = default;
 
             virtual void bind() const noexcept = 0;
-            virtual void unbind() const noexcept = 0;
+            [[maybe_unused]] virtual void unbind() const noexcept = 0;
 
             virtual void emplace_vbuffer(const std::shared_ptr<vertex_buffer>& vertex_buffer) noexcept = 0;
             virtual void emplace_ibuffer(const std::shared_ptr<index_buffer>& index_buffer) noexcept = 0;
-
-        private:
-            std::vector<std::shared_ptr<vertex_buffer>> m_vertex_buffers{};
-            std::vector<std::shared_ptr<index_buffer>> m_index_buffer{};
     };
 
     template<typename Ty>
@@ -231,13 +239,13 @@ namespace gapi{
             virtual ~shader() = default;
 
             virtual void bind() const noexcept = 0;
-            virtual void unbind() const noexcept = 0;
+            [[maybe_unused]] virtual void unbind() const noexcept = 0;
 
             virtual bool uniform(const std::string& n, uint32_t v) const noexcept = 0;
             virtual bool uniform(const std::string& n, float v) const noexcept = 0;
             virtual bool uniform(const std::string& n, float x, float y) const noexcept = 0;
             virtual bool uniform(const std::string& n, float x, float y, float z) const noexcept = 0;
-            virtual bool uniform(const std::string* n, float x, float y, float z, float w) const noexcept = 0;
+            virtual bool uniform(const std::string& n, float x, float y, float z, float w) const noexcept = 0;
             virtual bool uniform(const std::string& n, const glm::vec2& v) const noexcept = 0;
             virtual bool uniform(const std::string& n, const glm::vec3& v) const noexcept = 0;
             virtual bool uniform(const std::string& n, const glm::vec4& v) const noexcept = 0;
@@ -268,8 +276,11 @@ namespace gapi{
             virtual ~texture() = default;
 
             virtual void bind(uint32_t slot = 0) const noexcept = 0;
+
+            [[maybe_unused]] 
             virtual void unbind() const noexcept = 0;
 
+            [[maybe_unused]] 
             virtual void* data() const noexcept = 0;
             virtual void slot() const noexcept = 0;
             virtual void width() const noexcept = 0;
