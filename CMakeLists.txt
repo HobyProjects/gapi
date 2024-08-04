@@ -11,13 +11,14 @@ set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
-set(GAPI_HEADERS_DIR ${PROJECT_SOURCE_DIR}/include/gapi)
+set(GAPI_LIBRARY gapi)
+set(GAPI_HEADERS_DIR ${PROJECT_SOURCE_DIR}/include)
 set(GAPI_SOURCES_DIR ${PROJECT_SOURCE_DIR}/src)
 
 set(
     GAPI_HEADERS 
-        ${GAPI_HEADERS_DIR}/gapi.hpp
-        ${GAPI_HEADERS_DIR}/gapi_impl_opengl.hpp
+        ${GAPI_HEADERS_DIR}/${GAPI_LIBRARY}/gapi.hpp
+        ${GAPI_HEADERS_DIR}/${GAPI_LIBRARY}/gapi_impl_opengl.hpp
 )
 
 set(
@@ -38,5 +39,6 @@ target_include_directories(
         INTERFACE 
             ${GAPI_HEADERS_DIR}
             ${GAPI_SOURCES_DIR}
-            ${STB_IMAGE_SOURCE_DIR}
 )
+
+add_library(gapi::header_only ALIAS gapi)
