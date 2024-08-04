@@ -1,2 +1,6 @@
 .vscode/
 build/
+vendors/
+CMakeLists.txt
+.gitmodules
+.gitignore

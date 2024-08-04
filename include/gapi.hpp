@@ -213,27 +213,6 @@ namespace gapi{
             virtual bool uniform(const std::string& n, const glm::mat4& v) const = 0;
     };
 
-    class shader_container{
-        public:
-            shader_container() = default;
-            ~shader_container() = default;
-
-            void emplace(const std::shared_ptr<shader>& shader);
-
-            template<typename Ty, typename... TArgs>
-            [[nodiscard]] std::shared_ptr<shader> load(TArgs... args) const {
-                auto shader = make_shader<Ty>(std::forward<TArgs>(args)...);
-                emplace(shader);
-                return shader;
-            }
-
-            [[nodiscard]] std::shared_ptr<shader> get(const std::string& name) const;
-            [[nodiscard]] std::shared_ptr<shader> operator[](const std::string& name) const;
-
-        private:
-            std::unordered_map<std::string, std::shared_ptr<shader>> m_shaders{};
-    };
-
     class texture{
         public:
             texture() = default;
@@ -275,7 +254,7 @@ namespace gapi{
                 const std::function<void(Args...)>& func, Args... args){
                 func(std::forward<Args>(args)...);
                 va->bind();
-                api_base_draw(va);
+                draw(va);
             }
 
             template<typename Ret, typename... TArgs>
@@ -283,7 +262,7 @@ namespace gapi{
                 const std::function<Ret(TArgs...)>& func, TArgs... args){
                 func(std::forward<TArgs>(args)...);
                 va->bind();
-                api_base_draw(va);
+                draw(va);
             }
 
             template<typename... Args>
@@ -376,4 +355,25 @@ namespace gapi{
     [[nodiscard]] std::shared_ptr<Ty> make_shader(TArgs... args) noexcept{
         return std::make_shared<Ty>(std::forward<TArgs>(args)...);
     }
+
+    class shader_container{
+        public:
+            shader_container() = default;
+            ~shader_container() = default;
+
+            void emplace(const std::shared_ptr<shader>& shader);
+
+            template<typename Ty, typename... TArgs>
+            [[nodiscard]] std::shared_ptr<shader> load(TArgs... args) const {
+                auto shader = make_shader<Ty>(std::forward<TArgs>(args)...);
+                emplace(shader);
+                return shader;
+            }
+
+            [[nodiscard]] std::shared_ptr<shader> get(const std::string& name) const;
+            [[nodiscard]] std::shared_ptr<shader> operator[](const std::string& name) const;
+
+        private:
+            std::unordered_map<std::string, std::shared_ptr<shader>> m_shaders{};
+    };
 }

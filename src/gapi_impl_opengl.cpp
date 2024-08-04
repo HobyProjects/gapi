@@ -21,7 +21,7 @@ namespace gapi::opengl{
     }
 
 
-    bool gl_context::init() noexcept{
+    bool gl_context::init(){
         gapi_assert(m_window != nullptr, "Window is nullptr");
         glfwMakeContextCurrent(m_window);
         glfwSwapInterval(1);
@@ -34,12 +34,12 @@ namespace gapi::opengl{
         return true;
     }
 
-    void gl_context::swap() noexcept{
+    void gl_context::swap(){
         gapi_assert(m_window != nullptr, "Window is nullptr");
         glfwSwapBuffers(m_window);
     }
 
-    void gl_context::interval(uint32_t interval) noexcept{
+    void gl_context::interval(uint32_t interval){
         gapi_assert(m_window != nullptr, "Window is nullptr");
         glfwSwapInterval(interval);
     }
@@ -54,11 +54,11 @@ namespace gapi::opengl{
         gl(glDeleteBuffers(1, &m_id));
     }
 
-    void gl_vertex_buffer::bind() const noexcept{
+    void gl_vertex_buffer::bind() const{
         gl(glBindBuffer(GL_ARRAY_BUFFER, m_id));
     }
 
-    void gl_vertex_buffer::unbind() const noexcept{
+    void gl_vertex_buffer::unbind() const{
         gl(glBindBuffer(GL_ARRAY_BUFFER, 0));
     }
 
@@ -72,11 +72,11 @@ namespace gapi::opengl{
         gl(glDeleteBuffers(1, &m_id));
     }
 
-    void gl_index_buffer::bind() const noexcept{
+    void gl_index_buffer::bind() const{
         gl(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_id));
     }
 
-    void gl_index_buffer::unbind() const noexcept{
+    void gl_index_buffer::unbind() const{
         gl(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0));
     }
 
@@ -88,15 +88,15 @@ namespace gapi::opengl{
         gl(glDeleteVertexArrays(1, &m_id));
     }
 
-    void gl_vertex_array::bind() const noexcept{
+    void gl_vertex_array::bind() const{
         gl(glBindVertexArray(m_id));
     }
 
-    void gl_vertex_array::unbind() const noexcept{
+    void gl_vertex_array::unbind() const{
         gl(glBindVertexArray(0));
     }
 
-    void gl_vertex_array::emplace_vbuffer(const std::shared_ptr<vertex_buffer>& vb) noexcept{
+    void gl_vertex_array::emplace_vbuffer(const std::shared_ptr<vertex_buffer>& vb){
         vb->bind();
         const auto& layout = vb->layout();
         const auto& elements = layout.elements();
@@ -110,7 +110,7 @@ namespace gapi::opengl{
         m_vertex_buffers.emplace_back(vb);
     }
 
-    void gl_vertex_array::emplace_ibuffer(const std::shared_ptr<index_buffer>& ib) noexcept{
+    void gl_vertex_array::emplace_ibuffer(const std::shared_ptr<index_buffer>& ib){
         ib->bind();
         m_index_buffer = ib;
     }
@@ -147,92 +147,92 @@ namespace gapi::opengl{
         gl(glDeleteProgram(m_id));
     }
 
-    void gl_shader::bind() const noexcept{
+    void gl_shader::bind() const{
        gl(glUseProgram(m_id));
     }
 
-    void gl_shader::unbind() const noexcept{
+    void gl_shader::unbind() const{
         gl(glUseProgram(0));
     }
 
-    bool gl_shader::uniform(const std::string & n, uint32_t v) const noexcept{
+    bool gl_shader::uniform(const std::string & n, uint32_t v) const{
         uint32_t uniform_location = validator(n);
         if(uniform_location == -1) return false;
         gl(glUniform1i(uniform_location, v));
         return true;
     }
 
-    bool gl_shader::uniform(const std::string & n, float v) const noexcept{
+    bool gl_shader::uniform(const std::string & n, float v) const{
         uint32_t uniform_location = validator(n);
         if(uniform_location == -1) return false;
         gl(glUniform1f(uniform_location, v));
         return true;
     }
 
-    bool gl_shader::uniform(const std::string & n, float x, float y) const noexcept{
+    bool gl_shader::uniform(const std::string & n, float x, float y) const{
         uint32_t uniform_location = validator(n);
         if(uniform_location == -1) return false;
         gl(glUniform2f(uniform_location, x, y));
         return true;
     }
 
-    bool gl_shader::uniform(const std::string & n, float x, float y, float z) const noexcept{
+    bool gl_shader::uniform(const std::string & n, float x, float y, float z) const{
         uint32_t uniform_location = validator(n);
         if(uniform_location == -1) return false;
         gl(glUniform3f(uniform_location, x, y, z));
         return true;
     }
 
-    bool gl_shader::uniform(const std::string& n, float x, float y, float z, float w) const noexcept{
+    bool gl_shader::uniform(const std::string& n, float x, float y, float z, float w) const{
         uint32_t uniform_location = validator(n);
         if(uniform_location == -1) return false;
         gl(glUniform4f(uniform_location, x, y, z, w));
         return true;
     }
 
-    bool gl_shader::uniform(const std::string & n, const glm::vec2 & v) const noexcept{
+    bool gl_shader::uniform(const std::string & n, const glm::vec2 & v) const{
         uint32_t uniform_location = validator(n);
         if(uniform_location == -1) return false;
         gl(glUniform2fv(uniform_location, 1, glm::value_ptr(v)));
         return true;
     }
 
-    bool gl_shader::uniform(const std::string & n, const glm::vec3 & v) const noexcept{
+    bool gl_shader::uniform(const std::string & n, const glm::vec3 & v) const{
         uint32_t uniform_location = validator(n);
         if(uniform_location == -1) return false;
         gl(glUniform3fv(uniform_location, 1, glm::value_ptr(v)));
         return true;
     }
 
-    bool gl_shader::uniform(const std::string & n, const glm::vec4 & v) const noexcept{
+    bool gl_shader::uniform(const std::string & n, const glm::vec4 & v) const{
         uint32_t uniform_location = validator(n);
         if(uniform_location == -1) return false;
         gl(glUniform4fv(uniform_location, 1, glm::value_ptr(v)));
         return true;
     }
 
-    bool gl_shader::uniform(const std::string & n, const glm::mat2 & v) const noexcept{
+    bool gl_shader::uniform(const std::string & n, const glm::mat2 & v) const{
         uint32_t uniform_location = validator(n);
         if(uniform_location == -1) return false;
         gl(glUniformMatrix2fv(uniform_location, 1, GL_FALSE, glm::value_ptr(v)));
         return true;
     }
 
-    bool gl_shader::uniform(const std::string & n, const glm::mat3 & v) const noexcept{
+    bool gl_shader::uniform(const std::string & n, const glm::mat3 & v) const{
         uint32_t uniform_location = validator(n);
         if(uniform_location == -1) return false;
         gl(glUniformMatrix3fv(uniform_location, 1, GL_FALSE, glm::value_ptr(v)));
         return true;
     }
 
-    bool gl_shader::uniform(const std::string & n, const glm::mat4 & v) const noexcept{
+    bool gl_shader::uniform(const std::string & n, const glm::mat4 & v) const{
         uint32_t uniform_location = validator(n);
         if(uniform_location == -1) return false;
         gl(glUniformMatrix4fv(uniform_location, 1, GL_FALSE, glm::value_ptr(v)));
         return true;
     }
 
-    uint32_t gl_shader::validator(const std::string & n) const noexcept{
+    uint32_t gl_shader::validator(const std::string & n) const{
         uint32_t uniform_location = gl(glGetUniformLocation(m_id, n.c_str()));
         if(uniform_location == -1) {
             gapi_debug_msg("Uniform not found: ", n);
@@ -383,16 +383,16 @@ namespace gapi::opengl{
         stbi_image_free(m_data);
     }
 
-    void gl_texture_2d::bind(uint32_t slot) const noexcept{
+    void gl_texture_2d::bind(uint32_t slot) const{
         gl(glActiveTexture(GL_TEXTURE0 + slot));
         gl(glBindTexture(GL_TEXTURE_2D, m_id));
     }
 
-    void gl_texture_2d::unbind() const noexcept{
+    void gl_texture_2d::unbind() const{
         gl(glBindTexture(GL_TEXTURE_2D, 0));
     }
 
-    void gl_api::init() noexcept
+    void gl_api::init()
     {
         gl(glEnable(GL_BLEND));
         gl(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA));
@@ -404,11 +404,11 @@ namespace gapi::opengl{
         gl(glDrawElements(GL_TRIANGLES, index_buffer->count(), GL_UNSIGNED_INT, nullptr));
     }
 
-    void gl_api::clear() noexcept{
+    void gl_api::clear(){
         gl(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
     }
 
-    void gl_api::clear_color(float r, float g, float b, float a) noexcept{
+    void gl_api::clear_color(float r, float g, float b, float a){
         gl(glClearColor(r, g, b, a));
     }
 
