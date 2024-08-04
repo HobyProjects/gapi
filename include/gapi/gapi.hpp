@@ -937,6 +937,12 @@ namespace gapi{
         return std::make_shared<Ty>();
     }
 
+    template<typename Ty, typename... TArgs>
+    requires std::is_base_of<vertex_buffer, Ty>::value
+    [[nodiscard]] std::shared_ptr<Ty> make_context(TArgs... args) noexcept{
+        return std::make_shared<Ty>(std::forward<TArgs>(args)...);
+    }
+
     template<typename Ty>
     requires std::is_base_of<vertex_buffer, Ty>::value
     [[nodiscard]] std::shared_ptr<Ty> make_vertex() noexcept{
