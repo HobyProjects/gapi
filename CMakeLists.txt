@@ -26,42 +26,17 @@ set(
         ${GAPI_SOURCES_DIR}/gapi_impl_opengl.cpp
 )
 
-
-add_subdirectory(vendors)
-
-if(NOT BUILD_SHARED_LIBS)
-    add_library(
-        gapi 
-            STATIC 
-                ${GAPI_HEADERS} 
-                ${GAPI_SOURCES}
-    )
-else()
-    message(FATAL_ERROR "Shared library is not supported yet")
-endif()
-
-target_include_directories(
-    gapi
-        PUBLIC 
-            $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include/gapi>
-            $<BUILD_INTERFACE:${STB_IMAGE_SOURCE_DIR}>
-
-            $<INSTALL_INTERFACE:include/gapi>
-)
-
-target_include_directories(
-    gapi
-        PRIVATE 
-            $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include>
-            $<BUILD_INTERFACE:${STB_IMAGE_SOURCE_DIR}>
-
-            $<INSTALL_INTERFACE:include>
-)
-
-target_link_libraries(
+add_library(
     gapi 
-        PUBLIC 
-            glm::glm
-            libglew_static
-            glfw
+        INTERFACE
+            ${GAPI_HEADERS}
+            ${GAPI_SOURCES}
+)
+
+target_include_directories(
+    gapi
+        INTERFACE 
+            ${GAPI_HEADERS_DIR}
+            ${GAPI_SOURCES_DIR}
+            ${STB_IMAGE_SOURCE_DIR}
 )
