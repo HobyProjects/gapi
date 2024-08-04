@@ -9,3 +9,7 @@ add_subdirectory(glew-cmake EXCLUDE_FROM_ALL)
 
 # glfw lib Configuration
 add_subdirectory(glfw EXCLUDE_FROM_ALL)
+
+# Importing STB image lib configure
+set(STB_IMAGE_SOURCE_DIR ${PROJECT_SOURCE_DIR}/vendors/stb CACHE PATH "Path to stb image library")
+set(STB_IMAGE_HEADER ${PROJECT_SOURCE_DIR}/vendors/stb/stb_image.h CACHE INTERNAL "Path to stb_image header")

@@ -7,6 +7,7 @@
 #include <vector>
 #include <algorithm>
 #include <cassert>
+#include <unordered_map>
 
 #define GLM_ENABLE_EXPERIMENTAL
 #include <glm/glm.hpp>
@@ -17,15 +18,6 @@
 
 #if defined(_WIN32) || defined(_WIN64)
 #define GAPI_PLATFORM_WINDOWS
-#if defined(GAPI_STATIC)
-#define GAPI /* no exports or imports, library building static */        
-#elif defined(GAPI_SHARED)
-#ifdef GAPI_SHARED
-#define GAPI __declspec(dllexport)
-#else
-#define GAPI __declspec(dllimport)
-#endif
-#endif  
 #elif defined(__APPLE__) || defined(__MACH__)
 #include <TargetConditionals.h>
 // Check for Apple platforms
@@ -67,39 +59,6 @@ __attribute__((visibility("default")))
 
 namespace gapi{
 
-    class GAPI api_info {
-
-        public:
-            api_info() = default;
-            virtual ~api_info() = default;
-
-            virtual const std::string& vendor() const noexcept = 0;
-            virtual const std::string& renderer() const noexcept = 0;
-            virtual const std::string& version() const noexcept = 0;
-            virtual const std::string& language() const noexcept = 0;
-    };
-
-    class GAPI context{
-
-        public:
-            context() = default;
-            context(const context&) = delete;
-            context& operator=(const context&) = delete;
-            context(context&&) = delete;
-            context& operator=(context&&) = delete;
-            virtual ~context() = default;
-
-            virtual bool init() noexcept = 0;
-            virtual void swap() noexcept = 0;
-            virtual void interval(uint32_t interval) noexcept = 0;
-    };
-
-    template<typename Ty>
-    requires std::is_base_of<context, Ty>::value
-    [[nodiscard]] GAPI std::shared_ptr<Ty> make_context() noexcept{
-        return std::make_shared<Ty>();
-    }
-
     enum draw : size_t{
         static_draw     = 0, 
         dynamic_draw    = 1, 
@@ -118,7 +77,39 @@ namespace gapi{
         ui4     = 16,   mat2    = 16,   mat3    = 36,   mat4    = 64,   boolean  = 1
     };
 
-    struct GAPI buffer_elements{
+    enum class _gapi {
+        none = 0, opengl = 1, directx = 2, vulkan = 3, metal = 4
+    };
+
+
+    class api_info {
+
+        public:
+            api_info() = default;
+            virtual ~api_info() = default;
+
+            virtual const std::string& vendor() const = 0;
+            virtual const std::string& renderer() const = 0;
+            virtual const std::string& version() const = 0;
+            virtual const std::string& language() const = 0;
+    };
+
+    class context{
+
+        public:
+            context() = default;
+            context(const context&) = delete;
+            context& operator=(const context&) = delete;
+            context(context&&) = delete;
+            context& operator=(context&&) = delete;
+            virtual ~context() = default;
+
+            virtual bool init() = 0;
+            virtual void swap() = 0;
+            virtual void interval(uint32_t interval) = 0;
+    };
+
+    struct buffer_elements{
         buffer_elements() {}
         buffer_elements(const std::string& name, component comp, size_t size, bool normalized = false) noexcept
             : name(name), component(comp), size(size), normalized(normalized) {}
@@ -131,23 +122,23 @@ namespace gapi{
         bool normalized{false};
     };
 
-    class GAPI buffer_layout{
+    class buffer_layout{
         public:
             buffer_layout(){}
-            buffer_layout(std::initializer_list<buffer_elements> elements) noexcept
+            buffer_layout(std::initializer_list<buffer_elements> elements)
                 : m_elements(elements) { _stride(); }
             ~buffer_layout() = default;
 
-            [[nodiscard]] inline size_t stride() const noexcept { return m_stride; }
-            [[nodiscard]] inline const std::vector<buffer_elements>& elements() const noexcept { return m_elements; }
+            [[nodiscard]] inline size_t stride() const { return m_stride; }
+            [[nodiscard]] inline const std::vector<buffer_elements>& elements() const { return m_elements; }
 
-            inline std::vector<buffer_elements>::iterator begin() noexcept { return m_elements.begin(); }
-            inline std::vector<buffer_elements>::iterator end() noexcept { return m_elements.end(); }
-            inline std::vector<buffer_elements>::const_iterator begin() const noexcept { return m_elements.begin(); }
-            inline std::vector<buffer_elements>::const_iterator end() const noexcept { return m_elements.end(); }
+            inline std::vector<buffer_elements>::iterator begin() { return m_elements.begin(); }
+            inline std::vector<buffer_elements>::iterator end() { return m_elements.end(); }
+            inline std::vector<buffer_elements>::const_iterator begin() const { return m_elements.begin(); }
+            inline std::vector<buffer_elements>::const_iterator end() const { return m_elements.end(); }
 
         private:
-            inline void _stride() noexcept{
+            inline void _stride(){
                 m_stride = 0;
                 size_t offset = 0;
                 for (auto &element : m_elements)
@@ -163,36 +154,178 @@ namespace gapi{
             size_t m_stride{0};
     };
 
-    class GAPI vertex_buffer{
+    class vertex_buffer{
         public:
             constexpr vertex_buffer() = default;
             virtual ~vertex_buffer() = default;
 
-            virtual void bind() const noexcept = 0;
-            [[maybe_unused]] virtual void unbind() const noexcept = 0;
-            virtual void configure_layout(const buffer_layout& layout) const noexcept = 0;
-            virtual const buffer_layout& layout() const noexcept = 0;
+            virtual void bind() const = 0;
+            [[maybe_unused]] virtual void unbind() const = 0;
+
+            virtual void configure_layout(const buffer_layout& layout) const = 0;
+            virtual const buffer_layout& layout() const = 0;
     };
 
-    class GAPI index_buffer{
+    class index_buffer{
         public:
             index_buffer() = default;
             virtual ~index_buffer() = default;
 
-            virtual void bind() const noexcept = 0;
-            [[maybe_unused]] virtual void unbind() const noexcept = 0;
-            virtual size_t count() const noexcept = 0;
+            virtual void bind() const = 0;
+            [[maybe_unused]] virtual void unbind() const = 0;
+            virtual size_t count() const = 0;
+    };
+
+    class vertex_array{
+
+        public:
+            vertex_array() = default;
+            virtual ~vertex_array() = default;
+
+            virtual void bind() const = 0;
+            [[maybe_unused]] virtual void unbind() const = 0;
+
+            virtual void emplace_vbuffer(const std::shared_ptr<vertex_buffer>& vertex_buffer)  = 0;
+            virtual void emplace_ibuffer(const std::shared_ptr<index_buffer>& index_buffer) = 0;
+            inline virtual const std::vector<std::shared_ptr<vertex_buffer>>& vertexs() const = 0;
+            inline virtual const std::shared_ptr<index_buffer>& index() const = 0;
+    };
+
+    class shader{
+        public:
+            shader() = default;
+            virtual ~shader() = default;
+
+            virtual void bind() const = 0;
+            [[maybe_unused]] virtual void unbind() const = 0;
+
+            virtual const std::string& name() const = 0;
+            virtual bool uniform(const std::string& n, uint32_t v) const = 0;
+            virtual bool uniform(const std::string& n, float v) const = 0;
+            virtual bool uniform(const std::string& n, float x, float y) const = 0;
+            virtual bool uniform(const std::string& n, float x, float y, float z) const = 0;
+            virtual bool uniform(const std::string& n, float x, float y, float z, float w) const = 0;
+            virtual bool uniform(const std::string& n, const glm::vec2& v) const = 0;
+            virtual bool uniform(const std::string& n, const glm::vec3& v) const = 0;
+            virtual bool uniform(const std::string& n, const glm::vec4& v) const = 0;
+            virtual bool uniform(const std::string& n, const glm::mat2& v) const = 0;
+            virtual bool uniform(const std::string& n, const glm::mat3& v) const = 0;
+            virtual bool uniform(const std::string& n, const glm::mat4& v) const = 0;
+    };
+
+    class shader_container{
+        public:
+            shader_container() = default;
+            ~shader_container() = default;
+
+            void emplace(const std::shared_ptr<shader>& shader);
+
+            template<typename Ty, typename... TArgs>
+            [[nodiscard]] std::shared_ptr<shader> load(TArgs... args) const {
+                auto shader = make_shader<Ty>(std::forward<TArgs>(args)...);
+                emplace(shader);
+                return shader;
+            }
+
+            [[nodiscard]] std::shared_ptr<shader> get(const std::string& name) const;
+            [[nodiscard]] std::shared_ptr<shader> operator[](const std::string& name) const;
+
+        private:
+            std::unordered_map<std::string, std::shared_ptr<shader>> m_shaders{};
+    };
+
+    class texture{
+        public:
+            texture() = default;
+            virtual ~texture() = default;
+
+            virtual void bind(uint32_t slot = 0) const = 0;
+            [[maybe_unused]] virtual void unbind() const = 0;
+            [[maybe_unused]] virtual void* data() const = 0;
+
+            virtual uint32_t id() const = 0;
+            virtual int32_t width() const = 0;
+            virtual int32_t height() const = 0;
+            virtual int32_t channels() const = 0;
+    };
+
+    class base_api{
+        public:
+            base_api(_gapi api) : m_api(api) {};
+            virtual ~base_api() = default;
+
+            virtual void init() = 0;
+            virtual void draw(const std::shared_ptr<vertex_array>& va) = 0;
+            virtual void clear()  = 0;
+            virtual void clear_color(float r, float g, float b, float a) = 0;
+            inline _gapi api() { return m_api; };
+
+        protected:
+            _gapi m_api{_gapi::none};       
+    };
+
+    class renderer {
+        public:
+            static void init();
+            static void clear();
+            static void clear_color(float r, float g, float b, float a);
+
+            template<typename... Args>
+            static inline void submit(const std::shared_ptr<vertex_array>& va,
+                const std::function<void(Args...)>& func, Args... args){
+                func(std::forward<Args>(args)...);
+                va->bind();
+                api_base_draw(va);
+            }
+
+            template<typename Ret, typename... TArgs>
+            static inline void submit(const std::shared_ptr<vertex_array>& va, 
+                const std::function<Ret(TArgs...)>& func, TArgs... args){
+                func(std::forward<TArgs>(args)...);
+                va->bind();
+                api_base_draw(va);
+            }
+
+            template<typename... Args>
+            static void begin(const std::function<void(Args...)>& func, Args... args){
+                func(std::forward<Args>(args)...);
+            }
+
+            template<typename... Args>
+            static void end(const std::function<void(Args...)>& func, Args... args){
+                func(std::forward<Args>(args)...);
+            }
+
+            static inline _gapi api() { return m_api->api(); }
+
+        private:
+            renderer() = default;
+            renderer(const renderer&) = delete;
+            renderer& operator=(const renderer&) = delete;
+            ~renderer() = default;
+
+            static void draw(const std::shared_ptr<vertex_array>& va);
+
+        private:
+            static std::shared_ptr<base_api> m_api;
+
     };
 
     template<typename Ty>
+    requires std::is_base_of<context, Ty>::value
+    [[nodiscard]] std::shared_ptr<Ty> make_context() noexcept{
+        return std::make_shared<Ty>();
+    }
+
+    template<typename Ty>
     requires std::is_base_of<vertex_buffer, Ty>::value
-    [[nodiscard]] GAPI std::shared_ptr<Ty> make_vertex() noexcept{
+    [[nodiscard]] std::shared_ptr<Ty> make_vertex() noexcept{
         return std::make_shared<Ty>();
     }
 
     template<typename Ty, typename... TArgs>
     requires std::is_base_of<vertex_buffer, Ty>::value
-    [[nodiscard]] GAPI std::shared_ptr<Ty> make_vertex(TArgs... args) noexcept{
+    [[nodiscard]] std::shared_ptr<Ty> make_vertex(TArgs... args) noexcept{
         return std::make_shared<Ty>(std::forward<TArgs>(args)...);
     }
 
@@ -204,98 +337,43 @@ namespace gapi{
 
     template<typename Ty, typename... TArgs>
     requires std::is_base_of<index_buffer, Ty>::value
-    [[nodiscard]] GAPI std::shared_ptr<Ty> make_index(TArgs... args) noexcept{
+    [[nodiscard]] std::shared_ptr<Ty> make_index(TArgs... args) noexcept{
         return std::make_shared<Ty>(std::forward<TArgs>(args)...);
     }
 
-    class GAPI vertex_array{
-
-        public:
-            vertex_array() = default;
-            virtual ~vertex_array() = default;
-
-            virtual void bind() const noexcept = 0;
-            [[maybe_unused]] virtual void unbind() const noexcept = 0;
-
-            virtual void emplace_vbuffer(const std::shared_ptr<vertex_buffer>& vertex_buffer) noexcept = 0;
-            virtual void emplace_ibuffer(const std::shared_ptr<index_buffer>& index_buffer) noexcept = 0;
-    };
-
     template<typename Ty>
     requires std::is_base_of<vertex_array, Ty>::value
-    [[nodiscard]] GAPI std::shared_ptr<Ty> make_varray() noexcept{
+    [[nodiscard]] std::shared_ptr<Ty> make_varray() noexcept{
         return std::make_shared<Ty>();
     }
 
     template<typename Ty, typename... TArgs>
     requires std::is_base_of<vertex_array, Ty>::value
-    [[nodiscard]] GAPI std::shared_ptr<Ty> make_varray(TArgs... args) noexcept{
+    [[nodiscard]] std::shared_ptr<Ty> make_varray(TArgs... args) noexcept{
         return std::make_shared<Ty>(std::forward<TArgs>(args)...);
     }
-
-    class GAPI shader{
-        public:
-            shader() = default;
-            virtual ~shader() = default;
-
-            virtual void bind() const noexcept = 0;
-            [[maybe_unused]] virtual void unbind() const noexcept = 0;
-
-            virtual bool uniform(const std::string& n, uint32_t v) const noexcept = 0;
-            virtual bool uniform(const std::string& n, float v) const noexcept = 0;
-            virtual bool uniform(const std::string& n, float x, float y) const noexcept = 0;
-            virtual bool uniform(const std::string& n, float x, float y, float z) const noexcept = 0;
-            virtual bool uniform(const std::string& n, float x, float y, float z, float w) const noexcept = 0;
-            virtual bool uniform(const std::string& n, const glm::vec2& v) const noexcept = 0;
-            virtual bool uniform(const std::string& n, const glm::vec3& v) const noexcept = 0;
-            virtual bool uniform(const std::string& n, const glm::vec4& v) const noexcept = 0;
-            virtual bool uniform(const std::string& n, const glm::mat2& v) const noexcept = 0;
-            virtual bool uniform(const std::string& n, const glm::mat3& v) const noexcept = 0;
-            virtual bool uniform(const std::string& n, const glm::mat4& v) const noexcept = 0;
-    };
-
-    template<typename Ty>
-    requires std::is_base_of<shader, Ty>::value
-    [[nodiscard]] GAPI std::shared_ptr<Ty> make_shader() noexcept{
-        return std::make_shared<Ty>();
-    }
-
-    template<typename Ty, typename... TArgs>
-    requires std::is_base_of<shader, Ty>::value
-    [[nodiscard]] GAPI std::shared_ptr<Ty> make_shader(TArgs... args) noexcept{
-        return std::make_shared<Ty>(std::forward<TArgs>(args)...);
-    }
-
-    enum class texture_type : size_t{
-        none = 0,    diffuse = 1,    specular = 2,    normal = 3,    height = 4,   ambient = 5
-    };
-
-    class GAPI texture{
-        public:
-            texture() = default;
-            virtual ~texture() = default;
-
-            virtual void bind(uint32_t slot = 0) const noexcept = 0;
-
-            [[maybe_unused]] virtual void unbind() const noexcept = 0;
-
-            [[maybe_unused]] virtual void* data() const noexcept = 0;
-            virtual void slot() const noexcept = 0;
-            virtual void width() const noexcept = 0;
-            virtual void height() const noexcept = 0;
-            virtual void channels() const noexcept = 0;
-            virtual texture_type type() const noexcept = 0;
-    };
 
     template<typename Ty>
     requires std::is_base_of<texture, Ty>::value
-    [[nodiscard]] GAPI std::shared_ptr<Ty> make_texture() noexcept{
+    [[nodiscard]] std::shared_ptr<Ty> make_texture() noexcept{
         return std::make_shared<Ty>();
     }
 
     template<typename Ty, typename... TArgs>
     requires std::is_base_of<texture, Ty>::value
-    [[nodiscard]] GAPI std::shared_ptr<Ty> make_texture(TArgs... args) noexcept{
+    [[nodiscard]] std::shared_ptr<Ty> make_texture(TArgs... args) noexcept{
+        return std::make_shared<Ty>(std::forward<TArgs>(args)...);
+    }
+
+    template<typename Ty>
+    requires std::is_base_of<shader, Ty>::value
+    [[nodiscard]] std::shared_ptr<Ty> make_shader() noexcept{
+        return std::make_shared<Ty>();
+    }
+
+    template<typename Ty, typename... TArgs>
+    requires std::is_base_of<shader, Ty>::value
+    [[nodiscard]] std::shared_ptr<Ty> make_shader(TArgs... args) noexcept{
         return std::make_shared<Ty>(std::forward<TArgs>(args)...);
     }
 }

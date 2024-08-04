@@ -1,3 +1,6 @@
+#define STB_IMAGE_IMPLEMENTATION
+#include <stb_image.h>
+
 #include "gapi_impl_opengl.hpp"
 
 namespace gapi::opengl{
@@ -334,21 +337,79 @@ namespace gapi::opengl{
         size_t type_token_length = strlen(type_token);
         size_t pos = src.find(type_token, 0);
 
-        while(pos != std::string::npos)
-        {
+        while(pos != std::string::npos){
             size_t eol = src.find_first_of("\r\n", pos);
-            gapi_assert(eol == std::string::npos, "Syntax error, Did you forget to add shader typeline #type declaration");
-
+            gapi_assert(eol == std::string::npos, "Syntax error, Did you forget to add shader type line #type declaration");
             size_t begin = pos + type_token_length + 1;
             std::string type = src.substr(begin, eol - begin);
             gapi_assert(type != "vertex" && type != "fragment" && type != "pixel" && type != "geometry", "Invalid shader type specified");
-
             size_t next_line_pos = src.find_first_not_of("\r\n", eol);
             pos = src.find(type_token, next_line_pos);
             shader_sources[shader_type_from_string(type)] = src.substr(next_line_pos, pos - (next_line_pos == std::string::npos ? src.size() - 1 : next_line_pos));
         }
 
         return shader_sources;
+    }
+
+    gl_texture_2d::gl_texture_2d(std::filesystem::path path){
+        m_path = path.string();
+        stbi_set_flip_vertically_on_load(true);
+        m_data = stbi_load(m_path.c_str(), &m_width, &m_height, &m_channels, 0);
+        gapi_assert(m_data == nullptr, "Failed to load texture data");
+
+        GLenum internal_format = 0, data_format = 0;
+        if(m_channels == 4){
+            internal_format = GL_RGBA8;
+            data_format = GL_RGBA;
+        }
+        else if(m_channels == 3){
+            internal_format = GL_RGB8;
+            data_format = GL_RGB;
+        }
+
+        gapi_assert(internal_format == 0 || data_format == 0, "Texture format not supported");
+
+        gl(glGenTextures(1, &m_id));
+        gl(glBindTexture(GL_TEXTURE_2D, m_id));
+        gl(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR));
+        gl(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR));
+        gl(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE));
+        gl(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE));
+        gl(glTexImage2D(GL_TEXTURE_2D, 0, internal_format, m_width, m_height, 0, data_format, GL_UNSIGNED_BYTE, m_data));
+    }
+
+    gl_texture_2d::~gl_texture_2d(){
+        gl(glDeleteTextures(1, &m_id));
+        stbi_image_free(m_data);
+    }
+
+    void gl_texture_2d::bind(uint32_t slot) const noexcept{
+        gl(glActiveTexture(GL_TEXTURE0 + slot));
+        gl(glBindTexture(GL_TEXTURE_2D, m_id));
+    }
+
+    void gl_texture_2d::unbind() const noexcept{
+        gl(glBindTexture(GL_TEXTURE_2D, 0));
+    }
+
+    void gl_api::init() noexcept
+    {
+        gl(glEnable(GL_BLEND));
+        gl(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA));
+    }
+
+    void gl_api::draw(const std::shared_ptr<vertex_array>& va)
+    {
+        auto& index_buffer = va->index();
+        gl(glDrawElements(GL_TRIANGLES, index_buffer->count(), GL_UNSIGNED_INT, nullptr));
+    }
+
+    void gl_api::clear() noexcept{
+        gl(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
+    }
+
+    void gl_api::clear_color(float r, float g, float b, float a) noexcept{
+        gl(glClearColor(r, g, b, a));
     }
 
 }

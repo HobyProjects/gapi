@@ -38,7 +38,13 @@ else()
     message(FATAL_ERROR "Shared library is not supported yet")
 endif()
 
-target_include_directories(gapi PUBLIC ${PROJECT_SOURCE_DIR}/include)
+target_include_directories(
+    gapi 
+        PUBLIC 
+            ${PROJECT_SOURCE_DIR}/include
+            ${STB_IMAGE_SOURCE_DIR}
+)
+
 target_link_libraries(
     gapi 
         PUBLIC 
