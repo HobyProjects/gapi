@@ -16,25 +16,11 @@
 #include <glm/gtc/type_ptr.hpp>
 #include <glm/gtx/vector_angle.hpp>
 
-#if !defined(__glew_h__) || !defined(__GLEW_H__)
-#include <GL/glew.h>
-#endif
-
-#ifndef _glfw3_h_
-#ifndef GLFW_INCLUDE_NONE
-#define GLFW_INCLUDE_NONE
-#include <GLFW/glfw3.h>
-#endif
-#endif
-
-#ifdef APIENTRY
-#undef APIENTRY
-#endif
-
 #include <unordered_map>
 #include <filesystem>
 #include <fstream>
 #include <sstream>
+#include <cstddef>
 
 // Platform detection
 #if defined(_WIN32) || defined(_WIN64)
@@ -63,8 +49,7 @@ __attribute__((visibility("default")))
 #endif
 
 #ifdef _DEBUG
-
-// Debugging
+#include <iostream>
 #if defined(GAPI_PLATFORM_WINDOWS)
 #define gapi_debugbreak() __debugbreak()
 #define gapi_debug_msg(cap, msg) std::cerr << cap << msg << "\n"
@@ -85,35 +70,30 @@ __attribute__((visibility("default")))
 #endif
 
 namespace gapi{
-    
-    enum draw : size_t{
-        static_draw     = 0, 
-        dynamic_draw    = 1, 
+
+    enum COMPOENENT : int32_t{
+        XYZ     = 3,    XYZW    = 4,
+        RGB     = 3,    RGBA    = 4,
+        XY      = 2,    UV      = 2,    NONE    = 0,
     };
 
-    enum component : int32_t{
-        xyz     = 3,    xyzw    = 4,
-        rgb     = 3,    rgba    = 4,
-        xy      = 2,    uv      = 2,    none    = 0,
+    enum DATA : uint32_t{
+        BOOL    = 1,    F1      = 4,    F2      = 8,    F3      = 12,  
+        F4      = 16,   I1      = 4,    I2      = 8,    I3      = 12,
+        I4      = 16,   UI1     = 4,    UI2     = 8,    UI3     = 12, 
+        UI4     = 16,   MAT2    = 16,   MAT3    = 36,   MAT4    = 64  
     };
 
-    enum data_types : size_t{
-        null    = 0,    f1      = 4,    f2      = 8,    f3      = 12,  
-        f4      = 16,   i1      = 4,    i2      = 8,    i3      = 12,
-        i4      = 16,   ui1     = 4,    ui2     = 8,    ui3     = 12, 
-        ui4     = 16,   mat2    = 16,   mat3    = 36,   mat4    = 64,   boolean  = 1
-    };
-
-    enum class _gapi {
-        none = 0, opengl = 1, directx = 2, vulkan = 3, metal = 4
+    enum class GAPI : uint32_t{
+        SYSTEM = 0, OPENGL = 1, DIRECTX = 2, VULKAN = 3, METAL = 4
     };
 
 
-    class api_info {
+    class info {
 
         public:
-            api_info() = default;
-            virtual ~api_info() = default;
+            info() = default;
+            virtual ~info() = default;
 
             virtual const std::string& vendor() const = 0;
             virtual const std::string& renderer() const = 0;
@@ -138,14 +118,14 @@ namespace gapi{
 
     struct buffer_elements{
         buffer_elements() {}
-        buffer_elements(const std::string& name, component comp, size_t size, bool normalized = false) noexcept
+        buffer_elements(const std::string& name, COMPOENENT comp, uint32_t size, bool normalized = false) noexcept
             : name(name), component(comp), size(size), normalized(normalized) {}
         ~buffer_elements() = default;
 
         std::string name{};
-        component component{component::none};
-        size_t size{0};
-        size_t offset{0}; 
+        COMPOENENT component{COMPOENENT::NONE};
+        uint32_t size{0};
+        uint32_t offset{0}; 
         bool normalized{false};
     };
 
@@ -156,7 +136,7 @@ namespace gapi{
                 : m_elements(elements) { _stride(); }
             ~buffer_layout() = default;
 
-            [[nodiscard]] inline size_t stride() const { return m_stride; }
+            [[nodiscard]] inline uint32_t stride() const { return m_stride; }
             [[nodiscard]] inline const std::vector<buffer_elements>& elements() const { return m_elements; }
 
             inline std::vector<buffer_elements>::iterator begin() { return m_elements.begin(); }
@@ -167,7 +147,7 @@ namespace gapi{
         private:
             inline void _stride(){
                 m_stride = 0;
-                size_t offset = 0;
+                uint32_t offset = 0;
                 for (auto &element : m_elements)
                 {
                     element.offset = offset;
@@ -178,7 +158,7 @@ namespace gapi{
 
         private:
             std::vector<buffer_elements> m_elements{};
-            size_t m_stride{0};
+            uint32_t m_stride{0};
     };
 
     class vertex_buffer{
@@ -189,7 +169,7 @@ namespace gapi{
             virtual void bind() const = 0;
             [[maybe_unused]] virtual void unbind() const = 0;
 
-            virtual void configure_layout(const buffer_layout& layout) const = 0;
+            virtual void configure_layout(const buffer_layout& layout) = 0;
             virtual const buffer_layout& layout() const = 0;
     };
 
@@ -200,7 +180,7 @@ namespace gapi{
 
             virtual void bind() const = 0;
             [[maybe_unused]] virtual void unbind() const = 0;
-            virtual size_t count() const = 0;
+            virtual uint32_t count() const = 0;
     };
 
     class vertex_array{
@@ -212,8 +192,8 @@ namespace gapi{
             virtual void bind() const = 0;
             [[maybe_unused]] virtual void unbind() const = 0;
 
-            virtual void emplace_vbuffer(const std::shared_ptr<vertex_buffer>& vertex_buffer)  = 0;
-            virtual void emplace_ibuffer(const std::shared_ptr<index_buffer>& index_buffer) = 0;
+            virtual void emplace_vertex(const std::shared_ptr<vertex_buffer>& vertex_buffer)  = 0;
+            virtual void emplace_index(const std::shared_ptr<index_buffer>& index_buffer) = 0;
             inline virtual const std::vector<std::shared_ptr<vertex_buffer>>& vertexs() const = 0;
             inline virtual const std::shared_ptr<index_buffer>& index() const = 0;
     };
@@ -247,7 +227,7 @@ namespace gapi{
 
             virtual void bind(uint32_t slot = 0) const = 0;
             [[maybe_unused]] virtual void unbind() const = 0;
-            [[maybe_unused]] virtual void* data() const = 0;
+            [[maybe_unused]] virtual uint8_t* data() const = 0;
 
             virtual uint32_t id() const = 0;
             virtual int32_t width() const = 0;
@@ -265,91 +245,35 @@ namespace gapi{
             virtual void draw(const std::shared_ptr<vertex_array>& va) = 0;
             virtual void clear()  = 0;
             virtual void clear_color(float r, float g, float b, float a) = 0;   
-            virtual _gapi api() const  = 0;   
+            virtual GAPI xapi() const  = 0;   
     };
 
+    class shader_container{
 
-    template<typename Ty>
-    requires std::is_base_of<context, Ty>::value
-    [[nodiscard]] std::shared_ptr<Ty> make_context() noexcept{
-        return std::make_shared<Ty>();
-    }
+        public:
+            shader_container() = default;
+            ~shader_container() = default;
 
-    template<typename Ty>
-    requires std::is_base_of<context, Ty>::value
-    [[nodiscard]] std::shared_ptr<Ty> make_context(GLFWwindow*) noexcept{
-        return std::make_shared<Ty>();
-    }
+            void emplace(const std::shared_ptr<shader>& shader){
+                auto& shader_name = shader->name();
+                gapi_asserts(m_shaders.find(shader_name) == m_shaders.end(), "Shader already exists");
+                m_shaders[shader_name] = shader;
+            }
 
-    template<typename Ty, typename Args>
-    requires std::is_base_of<vertex_buffer, Ty>::value
-    [[nodiscard]] std::shared_ptr<Ty> make_context(Args args) noexcept{
-        return std::make_shared<Ty>(std::forward<Args>(args)...);
-    }
+            template<typename Ty, typename... TArgs>
+            [[nodiscard]] std::shared_ptr<shader> load(TArgs... args) const {
+                auto shader = make_shader<Ty>(std::forward<TArgs>(args)...);
+                emplace(shader);
+                return shader;
+            }
 
-    template<typename Ty, typename... TArgs>
-    requires std::is_base_of<vertex_buffer, Ty>::value
-    [[nodiscard]] std::shared_ptr<Ty> make_context(TArgs... args) noexcept{
-        return std::make_shared<Ty>(std::forward<TArgs>(args)...);
-    }
+            [[nodiscard]] std::shared_ptr<shader> get(const std::string& name) const{
+                auto it = m_shaders.find(name);
+                gapi_asserts(it != m_shaders.end(), "Shader not found");
+                return it->second;
+            }
 
-    template<typename Ty>
-    requires std::is_base_of<vertex_buffer, Ty>::value
-    [[nodiscard]] std::shared_ptr<Ty> make_vertex() noexcept{
-        return std::make_shared<Ty>();
-    }
-
-    template<typename Ty, typename... TArgs>
-    requires std::is_base_of<vertex_buffer, Ty>::value
-    [[nodiscard]] std::shared_ptr<Ty> make_vertex(TArgs... args) noexcept{
-        return std::make_shared<Ty>(std::forward<TArgs>(args)...);
-    }
-
-    template<typename Ty>
-    requires std::is_base_of<index_buffer, Ty>::value
-    [[nodiscard]] std::shared_ptr<Ty> make_index() noexcept{
-        return std::make_shared<Ty>();
-    }
-
-    template<typename Ty, typename... TArgs>
-    requires std::is_base_of<index_buffer, Ty>::value
-    [[nodiscard]] std::shared_ptr<Ty> make_index(TArgs... args) noexcept{
-        return std::make_shared<Ty>(std::forward<TArgs>(args)...);
-    }
-
-    template<typename Ty>
-    requires std::is_base_of<vertex_array, Ty>::value
-    [[nodiscard]] std::shared_ptr<Ty> make_varray() noexcept{
-        return std::make_shared<Ty>();
-    }
-
-    template<typename Ty, typename... TArgs>
-    requires std::is_base_of<vertex_array, Ty>::value
-    [[nodiscard]] std::shared_ptr<Ty> make_varray(TArgs... args) noexcept{
-        return std::make_shared<Ty>(std::forward<TArgs>(args)...);
-    }
-
-    template<typename Ty>
-    requires std::is_base_of<texture, Ty>::value
-    [[nodiscard]] std::shared_ptr<Ty> make_texture() noexcept{
-        return std::make_shared<Ty>();
-    }
-
-    template<typename Ty, typename... TArgs>
-    requires std::is_base_of<texture, Ty>::value
-    [[nodiscard]] std::shared_ptr<Ty> make_texture(TArgs... args) noexcept{
-        return std::make_shared<Ty>(std::forward<TArgs>(args)...);
-    }
-
-    template<typename Ty>
-    requires std::is_base_of<shader, Ty>::value
-    [[nodiscard]] std::shared_ptr<Ty> make_shader() noexcept{
-        return std::make_shared<Ty>();
-    }
-
-    template<typename Ty, typename... TArgs>
-    requires std::is_base_of<shader, Ty>::value
-    [[nodiscard]] std::shared_ptr<Ty> make_shader(TArgs... args) noexcept{
-        return std::make_shared<Ty>(std::forward<TArgs>(args)...);
-    }
+        private:
+            std::unordered_map<std::string, std::shared_ptr<shader>> m_shaders{};
+    };
 }
